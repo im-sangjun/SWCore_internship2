@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { getDashboardPath, useAuth } from '../../app/auth'
 
 export default function HomePage() {
+  const { session, profile, loading } = useAuth()
+
   return (
     <div className="space-y-8">
       <section className="rounded-2xl bg-white p-8 shadow-sm">
@@ -17,21 +20,34 @@ export default function HomePage() {
           상담 및 공지를 통합 관리하는 서버리스 PWA입니다.
         </p>
 
-        <div className="flex gap-3">
-          <Link
-            to="/login"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-white"
-          >
-            로그인
-          </Link>
+        {!loading && (
+          <div className="flex gap-3">
+            {session ? (
+              <Link
+                to={getDashboardPath(profile?.role)}
+                className="rounded-lg bg-slate-900 px-4 py-2 text-white"
+              >
+                내 메뉴로 이동
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="rounded-lg bg-slate-900 px-4 py-2 text-white"
+                >
+                  로그인
+                </Link>
 
-          <Link
-            to="/register"
-            className="rounded-lg border px-4 py-2"
-          >
-            회원가입
-          </Link>
-        </div>
+                <Link
+                  to="/register"
+                  className="rounded-lg border px-4 py-2"
+                >
+                  회원가입
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">

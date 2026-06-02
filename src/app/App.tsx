@@ -1,6 +1,17 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { getDashboardPath, useAuth } from './auth'
 
 export default function App() {
+  const { session, profile, loading, signOut } = useAuth()
+  const navigate = useNavigate()
+  const displayName =
+    profile?.name?.trim() || session?.user.email || '로그인 사용자'
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/')
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b bg-white">
@@ -10,11 +21,26 @@ export default function App() {
           </Link>
 
           <nav className="flex gap-4 text-sm">
-            <Link to="/login">로그인</Link>
-            <Link to="/register">회원가입</Link>
-            <Link to="/student">학생</Link>
-            <Link to="/manager">매니저</Link>
-            <Link to="/admin">관리자</Link>
+            {!loading && !session && (
+              <>
+                <Link to="/login">로그인</Link>
+                <Link to="/register">회원가입</Link>
+              </>
+            )}
+
+            {!loading && session && (
+              <>
+                {profile && (
+                  <Link to={getDashboardPath(profile.role)}>내 메뉴</Link>
+                )}
+                <span className="font-medium text-slate-700">
+                  {displayName}님
+                </span>
+                <button type="button" onClick={handleSignOut}>
+                  로그아웃
+                </button>
+              </>
+            )}
           </nav>
         </div>
       </header>

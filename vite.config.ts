@@ -10,11 +10,12 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['icons/app-icon.svg'],
       manifest: {
         name: 'SWCore Internship',
         short_name: 'SWCore',
         description: 'SW중심대학 인턴십 신청·매칭·관리 PWA',
+        lang: 'ko',
         theme_color: '#0f172a',
         background_color: '#ffffff',
         display: 'standalone',

@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { getDashboardPath, useAuth } from '../../app/auth'
 import { supabase } from '../../lib/supabase'
 import type { UserRole } from '../../types/app'
 
 export default function RegisterPage() {
+  const { session, profile, loading } = useAuth()
   const [role, setRole] = useState<UserRole>('student')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -16,9 +19,18 @@ export default function RegisterPage() {
     event.preventDefault()
     setMessage('')
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          name,
+          role,
+          student_no: role === 'student' ? studentNo : null,
+          department: role === 'student' ? department : null,
+          grade: role === 'student' && grade ? Number(grade) : null,
+        },
+      },
     })
 
     if (error) {
@@ -26,34 +38,15 @@ export default function RegisterPage() {
       return
     }
 
-    const userId = data.user?.id
-
-    if (!userId) {
-      setMessage('회원가입은 되었지만 사용자 ID를 확인하지 못했습니다.')
-      return
-    }
-
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: userId,
-      email,
-      name,
-      role,
-      student_no: role === 'student' ? studentNo : null,
-      department: role === 'student' ? department : null,
-      grade: role === 'student' && grade ? Number(grade) : null,
-      manager_status: role === 'manager' ? 'pending' : null,
-    })
-
-    if (profileError) {
-      setMessage(profileError.message)
-      return
-    }
-
     if (role === 'manager') {
       setMessage('매니저 회원가입이 완료되었습니다. 관리자 승인을 기다려주세요.')
     } else {
-      setMessage('회원가입이 완료되었습니다.')
+      setMessage('회원가입이 완료되었습니다. 이메일 확인이 필요한 경우 메일함을 확인해주세요.')
     }
+  }
+
+  if (!loading && session) {
+    return <Navigate to={getDashboardPath(profile?.role)} replace />
   }
 
   return (

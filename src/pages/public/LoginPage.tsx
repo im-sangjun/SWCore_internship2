@@ -1,7 +1,11 @@
 import { useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { getDashboardPath, useAuth } from '../../app/auth'
 import { supabase } from '../../lib/supabase'
 
 export default function LoginPage() {
+  const { session, profile, loading, refreshProfile } = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -10,7 +14,7 @@ export default function LoginPage() {
     event.preventDefault()
     setMessage('')
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -20,7 +24,12 @@ export default function LoginPage() {
       return
     }
 
-    setMessage('로그인되었습니다.')
+    const nextProfile = await refreshProfile(data.session)
+    navigate(getDashboardPath(nextProfile?.role), { replace: true })
+  }
+
+  if (!loading && session) {
+    return <Navigate to={getDashboardPath(profile?.role)} replace />
   }
 
   return (
