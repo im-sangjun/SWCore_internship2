@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [studentNo, setStudentNo] = useState('')
   const [department, setDepartment] = useState('')
   const [grade, setGrade] = useState('')
@@ -25,6 +26,7 @@ export default function RegisterPage() {
       options: {
         data: {
           name,
+          phone,
           role,
           student_no: role === 'student' ? studentNo : null,
           department: role === 'student' ? department : null,
@@ -55,15 +57,19 @@ export default function RegisterPage() {
 
       <form onSubmit={handleRegister} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium">회원 유형</label>
-          <select
-            className="w-full rounded-lg border px-3 py-2"
-            value={role}
-            onChange={(event) => setRole(event.target.value as UserRole)}
-          >
-            <option value="student">학생</option>
-            <option value="manager">매니저</option>
-          </select>
+          <label className="mb-2 block text-sm font-medium">회원 유형</label>
+          <div className="grid grid-cols-2 rounded-xl border bg-slate-50 p-1">
+            {(['student', 'manager'] as UserRole[]).map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`rounded-lg px-4 py-2 text-sm font-semibold ${role === item ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600'}`}
+                onClick={() => setRole(item)}
+              >
+                {item === 'student' ? '학생' : '매니저'}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -95,6 +101,16 @@ export default function RegisterPage() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium">연락처</label>
+          <input
+            className="w-full rounded-lg border px-3 py-2"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            placeholder="010-0000-0000"
           />
         </div>
 

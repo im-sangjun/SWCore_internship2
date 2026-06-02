@@ -20,6 +20,10 @@ export default function StudentDashboard() {
           <h2 className="font-bold">지원 현황</h2>
           <p className="mt-2 text-sm text-slate-600">지원 여부와 선발 상태를 확인합니다.</p>
         </Link>
+        <Link to="/student/notices" className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold">공지사항</h2><p className="mt-2 text-sm text-slate-600">주요 안내를 확인합니다.</p></Link>
+        <Link to="/student/consultations" className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold">상담 신청</h2><p className="mt-2 text-sm text-slate-600">상담을 요청하고 답변을 확인합니다.</p></Link>
+        <Link to="/student/notifications" className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold">알림</h2><p className="mt-2 text-sm text-slate-600">개인 알림을 확인합니다.</p></Link>
+        <Link to="/student/profile" className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold">개인정보 수정</h2><p className="mt-2 text-sm text-slate-600">기본 정보와 비밀번호를 수정합니다.</p></Link>
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null unique,
   name text,
+  phone text,
   role text not null check (role in ('admin', 'manager', 'student')),
   student_no text,
   department text,
@@ -17,7 +18,7 @@ create table public.profiles (
 create table public.internship_sessions (
   id uuid primary key default gen_random_uuid(),
   year int not null,
-  term text not null check (term in ('1학기', '하계', '2학기', '동계')),
+  term text not null check (term in ('1학기', '하계', '하계_2학기', '2학기', '동계', '동계_1학기')),
   name text not null,
   is_linked boolean default false,
   linked_session_id uuid references public.internship_sessions(id),
@@ -61,10 +62,11 @@ create table public.internship_recruitments (
   related_departments text[],
   target_grades int[],
   employment_linked boolean default false,
+  is_visible_to_students boolean not null default false,
   description text,
   requirements text,
   status text not null default 'open'
-    check (status in ('open', 'closed')),
+    check (status in ('open', 'reviewing', 'closed')),
   created_at timestamptz default now()
 );
 
@@ -141,5 +143,7 @@ insert into public.internship_sessions (year, term, name, status)
 values
   (2026, '1학기', '2026년 1학기 SWCore 인턴십', 'draft'),
   (2026, '하계', '2026년 하계 SWCore 인턴십', 'draft'),
+  (2026, '하계_2학기', '2026년 하계_2학기 SWCore 인턴십', 'draft'),
   (2026, '2학기', '2026년 2학기 SWCore 인턴십', 'draft'),
-  (2026, '동계', '2026년 동계 SWCore 인턴십', 'draft');
+  (2026, '동계', '2026년 동계 SWCore 인턴십', 'draft'),
+  (2026, '동계_1학기', '2026년 동계_1학기 SWCore 인턴십', 'draft');

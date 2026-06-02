@@ -1,9 +1,12 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { getDashboardPath, useAuth } from './auth'
+import BackButton from '../components/BackButton'
 
 export default function App() {
   const { session, profile, loading, signOut } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const isWidePage = location.pathname === '/admin/matchings'
   const displayName =
     profile?.name?.trim() || session?.user.email || '로그인 사용자'
 
@@ -45,7 +48,8 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className={`mx-auto px-4 py-8 ${isWidePage ? 'max-w-none' : 'max-w-6xl'}`}>
+        <BackButton />
         <Outlet />
       </main>
     </div>
